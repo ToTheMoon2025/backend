@@ -1,10 +1,9 @@
-import express from 'express';
-import { Request, Response } from 'express';
-import bodyParser from 'body-parser';
-import dotenv from 'dotenv';
+const express = require('express');
+const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
 
-// Import your mintNFT function
-import mintNFT from '../minting/mintNFT';
+
+const mintNFT = require('../minting/mintNFT').default; // Adjust the path as needed
 
 dotenv.config();
 const app = express();
@@ -13,16 +12,11 @@ const port = 3000;
 // Middleware to parse JSON request bodies
 app.use(bodyParser.json());
 
-// Define the request body type for TypeScript
-interface MintNFTRequestBody {
-    walletAddress: string;
-    chain: string;
-    metadata: JSON; // Adjust this type if you have a specific metadata schema
-}
-
 // Define the endpoint to call the mintNFT function
-app.post('/mint-nft', async (req: Request, res: Response): Promise<any> => {
-    const { walletAddress, chain, metadata } = req.body as MintNFTRequestBody;
+import { Request, Response } from 'express';
+
+app.post('/mint-nft', async (req: Request, res: Response) => {
+    const { walletAddress, chain, metadata } = req.body;
 
     if (!walletAddress || !chain || !metadata) {
         return res.status(400).json({ error: "Missing required fields: walletAddress, chain, or metadata" });
@@ -31,9 +25,13 @@ app.post('/mint-nft', async (req: Request, res: Response): Promise<any> => {
     try {
         const result = await mintNFT(walletAddress, chain, metadata);
         res.status(200).json({ success: true, data: result });
-    } catch (error: any) {
-        console.error("Error in /mint-nft:", error.message);
-        res.status(500).json({ success: false, error: error.message });
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error("Error in /mint-nft:", error.message);
+        } else {
+            console.error("Error in /mint-nft:", error);
+        }
+        res.status(500).json({ success: false, error: (error as Error).message });
     }
 });
 

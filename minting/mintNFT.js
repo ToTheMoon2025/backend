@@ -90,3 +90,19 @@ function mintNFT(walletAddress, chain, metadata) {
 }
 ;
 exports.default = mintNFT;
+// // Test the mintNFT function
+// (async () => {
+//     try {
+//         const walletAddress = "2i9LB2Dg3MPqQmQ5w9aNr874BYSaAo73Qg7yyzemBF2o"; // Replace with a valid wallet address
+//         const chain = "solana"; // Replace with the target chain, e.g., "ethereum" or "polygon"
+//         const metadata = {
+//             name: "Test NFT",
+//             description: "This is a test NFT",
+//             image: "https://s.abcnews.com/images/US/donald-trump-1-epa-gmh-250116_1737051836011_hpMain_3x2_992.jpg"
+//         };
+//         const result = await mintNFT(walletAddress, chain, metadata);
+//         console.log("NFT successfully created:", result);
+//     } catch (error) {
+//         console.error("Test failed:", error);
+//     }
+// })();
